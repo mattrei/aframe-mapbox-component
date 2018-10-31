@@ -1,15 +1,12 @@
-# Looking for maintainers
-
-I have recently [started a new business](https://mobile.twitter.com/ceteio), which means I no longer have time to maintain this project.
-
-Please [reach out](https://github.com/jesstelford) if you are interested in updating this component to the latest versions of aframe, merging the pending PRs, and resolving the list of issues ❤️
-
 # aframe-mapbox-component
 
 A 3D street map entity & component for [A-Frame](https://aframe.io).
 
 The `<a-mapbox>` entity displays a plane textured with a rendered OpenStreetMap
 map.
+
+
+The component and idea was originally thankfully developed by [jesstelford](https://github.com/jesstelford). I forked and renamed the project accordingly and will continue to develop this component.
 
 ### Installation
 
