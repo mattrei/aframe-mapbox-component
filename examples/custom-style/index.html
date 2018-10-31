@@ -2,17 +2,17 @@
   <head>
     <title>A-Frame Map - Basic</title>
     <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>
-    <script src="../../dist/aframe-map.min.js"></script>
+    <script src="../../dist/aframe-mapbox-component.min.js"></script>
   </head>
   <body>
     <a-scene>
 
-      <a-map
-        map="center: 150.6510958,-33.8474024; zoom: 10"
+      <a-mapbox
+        mapbox="center: 150.6510958,-33.8474024; zoom: 10"
         width="7"
         height="4"
         position="0 2 -2"
-      ></a-map>
+      ></a-mapbox>
 
       <!-- A frame around the map! Because... aframe / a-frame / a frame... get it!? -->
       <a-box position="0 4 -2" width="7.1" height="0.1" depth="0.1" color="#4CC3D9"></a-box>
@@ -900,9 +900,9 @@
         "id": "giqd6hug7"
       };
 
-      var mapEl = document.querySelector('a-map')
-      mapEl.addEventListener('map-loaded', function() {
-        mapEl.setAttribute('map', 'style', JSON.stringify(style));
+      var mapEl = document.querySelector('a-mapbox')
+      mapEl.addEventListener('mapbox-loaded', function() {
+        mapEl.setAttribute('mapbox', 'style', JSON.stringify(style));
       });
     </script>
   </body>

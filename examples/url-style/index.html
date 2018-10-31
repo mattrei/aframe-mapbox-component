@@ -1,20 +1,20 @@
 <html>
   <head>
-    <title>A-Frame Map - Basic</title>
+    <title>A-Frame Map - Url Style</title>
     <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>
-    <script src="../../dist/aframe-map.min.js"></script>
+    <script src="../../dist/aframe-mapbox-component.min.js"></script>
   </head>
   <body>
     <a-scene>
 
-      <a-map
-        map="center: 15.8056,47.7671; zoom: 15; 
+      <a-mapbox
+        mapbox="center: 15.8056,47.7671; zoom: 5; 
           accessToken: pk.eyJ1IjoibWF0dHJlIiwiYSI6IjRpa3ItcWcifQ.s0AGgKi0ai23K5OJvkEFnA;
           "
         width="7"
         height="4"
         position="0 2 -2"
-      ></a-map>
+      ></a-mapbox>
 
       <!-- A frame around the map! Because... aframe / a-frame / a frame... get it!? -->
       <a-box position="0 4 -2" width="7.1" height="0.1" depth="0.1" color="#4CC3D9"></a-box>

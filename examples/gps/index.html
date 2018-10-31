@@ -2,18 +2,18 @@
   <head>
     <title>A-Frame Map - GPS</title>
     <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>
-    <script src="../../dist/aframe-map.min.js"></script>
+    <script src="../../dist/aframe-mapbox-component.min.js"></script>
   </head>
   <body>
     <a-scene>
 
-      <a-map
+      <a-mapbox
         width="7"
         height="4"
         position="0 2 -2"
       >
         <a-sphere id="marker" color="#EF2D5E" position="0 0 0" visible="false" radius="0.1"></a-sphere>
-      </a-map>
+      </a-mapbox>
 
       <a-box position="0 4 -2" width="7.1" height="0.1" depth="0.1" color="#4CC3D9"></a-box>
       <a-box position="0 0 -2" width="7.1" height="0.1" depth="0.1" color="#4CC3D9"></a-box>
@@ -27,19 +27,19 @@
       </a-entity>
     </a-scene>
     <script>
-      var mapEl = document.querySelector('a-map');
+      var mapEl = document.querySelector('a-mapbox');
       var markerEl = document.querySelector('#marker');
       var setProperty = window.AFRAME.utils.entity.setComponentProperty;
 
-      mapEl.addEventListener('map-loaded', function() {
+      mapEl.addEventListener('mapbox-loaded', function() {
 
         navigator.geolocation.watchPosition(function(position) {
 
           var long = position.coords.longitude;
           var lat = position.coords.latitude;
 
-          setProperty(mapEl, 'map.center', long + ',' + lat);
-          setProperty(mapEl, 'map.zoom', '10');
+          setProperty(mapEl, 'mapbox.center', long + ',' + lat);
+          setProperty(mapEl, 'mapbox.zoom', '10');
 
           setProperty(markerEl, 'position', mapEl.components.map.project(long, lat));
           setProperty(markerEl, 'visible', true);

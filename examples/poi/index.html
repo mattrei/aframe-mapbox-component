@@ -2,19 +2,19 @@
   <head>
     <title>A-Frame Map - GPS</title>
     <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>
-    <script src="../../dist/aframe-map.min.js"></script>
+    <script src="../../dist/aframe-mapbox-component.min.js"></script>
   </head>
   <body>
     <a-scene>
 
-      <a-map
+      <a-mapbox
         width="7"
         height="4"
         position="0 0 0"
         rotation="-90 0 0"
       >
         <a-sphere id="current-location" color="#00f" position="0 0 0" visible="false" radius="0.05"></a-sphere>
-      </a-map>
+      </a-mapbox>
 
       <a-sky color="#ECECEC"></a-sky>
 
@@ -23,7 +23,7 @@
       </a-entity>
     </a-scene>
     <script>
-      var mapEl = document.querySelector('a-map');
+      var mapEl = document.querySelector('a-mapbox');
       var currentLocationEl = document.querySelector('#current-location');
       var setProperty = AFRAME.utils.entity.setComponentProperty;
       var venueCache = {};
@@ -93,7 +93,7 @@
       }
 
       // Once the map is loaded
-      mapEl.addEventListener('map-loaded', function() {
+      mapEl.addEventListener('mapbox-loaded', function() {
 
         var geomData = mapEl.components.geometry.data;
 
@@ -108,10 +108,10 @@
           var lat = position.coords.latitude;
 
           // center the map on that location
-          setProperty(mapEl, 'map.center', long + ',' + lat);
+          setProperty(mapEl, 'mapbox.center', long + ',' + lat);
 
           // and zoom in: 20 is very zoomed in, 0 is really zoomed out
-          setProperty(mapEl, 'map.zoom', '13');
+          setProperty(mapEl, 'mapbox.zoom', '13');
 
           // Place the marker in the correct position
           setProperty(currentLocationEl, 'position', mapEl.components.map.project(long, lat));

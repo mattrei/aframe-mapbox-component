@@ -4,11 +4,11 @@ I have recently [started a new business](https://mobile.twitter.com/ceteio), whi
 
 Please [reach out](https://github.com/jesstelford) if you are interested in updating this component to the latest versions of aframe, merging the pending PRs, and resolving the list of issues ❤️
 
-# aframe-map
+# aframe-mapbox-component
 
 A 3D street map entity & component for [A-Frame](https://aframe.io).
 
-The `<a-map>` entity displays a plane textured with a rendered OpenStreetMap
+The `<a-mapbox>` entity displays a plane textured with a rendered OpenStreetMap
 map.
 
 ### Installation
@@ -20,12 +20,12 @@ Use directly from the unpkg CDN:
 ```html
 <head>
   <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
-  <script src="https://unpkg.com/aframe-map/dist/aframe-map.min.js"></script>
+  <script src="https://unpkg.com/aframe-mapbox-component/dist/aframe-mapbox-component.min.js"></script>
 </head>
 
 <body>
   <a-scene>
-    <a-map position="0 0 -5"></a-map>
+    <a-mapbox position="0 0 -5"></a-map>
     <a-camera></a-camera>
   </a-scene>
 </body>
@@ -36,20 +36,17 @@ Use directly from the unpkg CDN:
 Install via npm:
 
 ```bash
-npm install aframe-map
+npm install aframe-mapbox-component
 ```
 
 Then register and use.
 
 ```javascript
 import 'aframe';
-import 'aframe-map';
+import 'aframe-mapbox-component';
 ```
 
-### `map` component
-
-_Note: The `<a-map>` entity automatically includes the
-`map` component._
+### `mapbox` component
 
 #### Schema
 
@@ -95,5 +92,5 @@ server](http://osm2vectortiles.org/docs/getting-started/)!
 
 | event name | data | description |
 |---|---|---|
-| `map-loaded` | (none) | Fired on the first render of the map component |
-| `map-moveend` | (none) | Fired when zoom, center, bearing, or pitch are changed _after_ the initial render |
+| `mapbox-loaded` | (none) | Fired on the first render of the map component |
+| `mapbox-moveend` | (none) | Fired when zoom, center, bearing, or pitch are changed _after_ the initial render |

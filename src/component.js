@@ -4,8 +4,8 @@ const mapboxgl = require('mapbox-gl');
 
 const defaultMapStyle = require('./map-style.json');
 
-const MAP_LOADED_EVENT = 'map-loaded';
-const MAP_MOVE_END_EVENT = 'map-moveend';
+const MAP_LOADED_EVENT = 'mapbox-loaded';
+const MAP_MOVE_END_EVENT = 'mapbox-moveend';
 
 function parseSpacedFloats (value, count, attributeName) {
   if (!value) {
@@ -120,7 +120,7 @@ function processStyle (style) {
   /**
    * Map component for A-Frame.
    */
-AFRAME.registerComponent('map', {
+AFRAME.registerComponent('mapbox', {
 
   dependencies: [
     'geometry',

@@ -1,7 +1,7 @@
 const extendDeep = AFRAME.utils.extendDeep;
 const meshMixin = AFRAME.primitives.getMeshMixin();
 
-AFRAME.registerPrimitive('a-map', extendDeep({}, meshMixin, {
+AFRAME.registerPrimitive('a-mapbox', extendDeep({}, meshMixin, {
   defaultComponents: {
     geometry: {
       primitive: 'plane'
@@ -12,7 +12,7 @@ AFRAME.registerPrimitive('a-map', extendDeep({}, meshMixin, {
       side: 'both',
       transparent: true
     },
-    ['map']: {}
+    ['mapbox']: {}
   },
 
   mappings: {
