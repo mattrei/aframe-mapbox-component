@@ -1,6 +1,6 @@
 {
   "name": "aframe-mapbox-component",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "A map component using Mapbox for A-Frame.",
   "main": "index.js",
   "unpkg": "dist/aframe-mapbox-component.min.js",
