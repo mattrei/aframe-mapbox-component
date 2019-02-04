@@ -279,6 +279,8 @@ AFRAME.registerComponent('mapbox', {
     AFRAME.utils.entity.setComponentProperty(this.el, 'material.width', options.width);
     AFRAME.utils.entity.setComponentProperty(this.el, 'material.height', options.height);
 
+    this.created = false;
+
     createMap(this._canvasContainerId, options, mapInstance => {
       this._mapInstance = mapInstance;
 
@@ -296,6 +298,15 @@ AFRAME.registerComponent('mapbox', {
    * Generally modifies the entity based on the data.
    */
   update: function (oldData) {
+    // Everything after this requires a map instance
+    if (!this._mapInstance) {
+      return;
+    }
+    if (!this.created) {
+      oldData = {}
+      this.created = true
+    }
+
     // Nothing changed
     if (AFRAME.utils.deepEqual(oldData, this.data)) {
       return;
@@ -308,11 +319,6 @@ AFRAME.registerComponent('mapbox', {
       setDimensions(this._canvasContainerId, this.el, width, height);
     }
 
-    // Everything after this requires a map instance
-    if (!this._mapInstance) {
-      return;
-    }
-
     if (oldData.style !== this.data.style) {
       const style = processStyle(this.data.style);
       this._mapInstance.setStyle(style);
@@ -323,7 +329,7 @@ AFRAME.registerComponent('mapbox', {
     }
 
     if (oldData.maxZoom !== this.data.maxZoom) {
-      this._mapInstance.setmaxZoom(this.data.maxZoom);
+      this._mapInstance.setMaxZoom(this.data.maxZoom);
     }
 
     if (oldData.maxBounds !== this.data.maxBounds) {
@@ -334,8 +340,6 @@ AFRAME.registerComponent('mapbox', {
 
     if (oldData.zoom !== this.data.zoom) {
       jumpOptions.zoom = this.data.zoom;
-      // we also need to set the center otherwise the mapbox library goes crazy
-      jumpOptions.center = this.data.center || oldData.center;
     }
 
     if (!AFRAME.utils.deepEqual(oldData.center, this.data.center)) {
