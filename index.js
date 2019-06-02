@@ -1,3 +1,5 @@
+require('mapbox-gl/dist/mapbox-gl.css')
+
 const extendDeep = AFRAME.utils.extendDeep;
 const meshMixin = AFRAME.primitives.getMeshMixin();
 

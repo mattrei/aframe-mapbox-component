@@ -1,7 +1,7 @@
 <html>
   <head>
     <title>A-Frame Map - GPS</title>
-    <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/0.9.2/aframe.min.js"></script>
     <script src="../../dist/aframe-mapbox-component.min.js"></script>
   </head>
   <body>
@@ -41,7 +41,7 @@
           setProperty(mapEl, 'mapbox.center', long + ',' + lat);
           setProperty(mapEl, 'mapbox.zoom', '10');
 
-          setProperty(markerEl, 'position', mapEl.components.map.project(long, lat));
+          setProperty(markerEl, 'position', mapEl.components.mapbox.project(long, lat));
           setProperty(markerEl, 'visible', true);
 
         }, function(error) {
