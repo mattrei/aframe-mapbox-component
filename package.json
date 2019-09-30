@@ -1,6 +1,6 @@
 {
   "name": "aframe-mapbox-component",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "description": "A map component using Mapbox for A-Frame.",
   "main": "index.js",
   "unpkg": "dist/aframe-mapbox-component.min.js",
@@ -67,7 +67,7 @@
   },
   "dependencies": {
     "cuid": "^2.1.6",
-    "mapbox-gl": "^1.0.0"
+    "mapbox-gl": "^1.4.0"
   },
   "semistandard": {
     "globals": [

@@ -89,25 +89,27 @@ function processMapboxCanvasElement (mapboxInstance, canvasContainer) {
   canvas.setAttribute('crossorigin', 'anonymous');
 }
 
-function createMap (canvasId, options, done) {
-  const canvasContainer = getCanvasContainerAssetElement(canvasId, options.width, options.height);
+function createMap (canvasId, options) {
+  return new Promise((resolve, reject) => {
+    const canvasContainer = getCanvasContainerAssetElement(canvasId, options.width, options.height);
 
-  // eslint-disable-next-line no-new
-  const mapboxInstance = new mapboxgl.Map(Object.assign({
-    container: canvasContainer
-  }, options));
+    // eslint-disable-next-line no-new
+    const mapboxInstance = new mapboxgl.Map(Object.assign({
+      container: canvasContainer
+    }, options));
 
-  if (!mapboxInstance.loaded()) {
-    mapboxInstance.once('load', _ => {
+    if (!mapboxInstance.loaded()) {
+      mapboxInstance.once('load', _ => {
+        mapboxInstance.resize();
+        processMapboxCanvasElement(mapboxInstance, canvasContainer);
+        resolve(mapboxInstance);
+      });
+    } else {
       mapboxInstance.resize();
       processMapboxCanvasElement(mapboxInstance, canvasContainer);
-      done(mapboxInstance);
-    });
-  } else {
-    mapboxInstance.resize();
-    processMapboxCanvasElement(mapboxInstance, canvasContainer);
-    done(mapboxInstance);
-  }
+      resolve(mapboxInstance);
+    }
+  });
 }
 
 function processStyle (style) {
@@ -245,21 +247,27 @@ AFRAME.registerComponent('mapbox', {
      */
   },
   init: function () {
-    const geomComponent = this.el.components.geometry;
+    const el = this.el;
+    const data = this.data;
+    const geomData = el.components.geometry.data;
 
-    if (this.data.accessToken) {
-      mapboxgl.accessToken = 'pk.eyJ1IjoibWF0dHJlIiwiYSI6IjRpa3ItcWcifQ.s0AGgKi0ai23K5OJvkEFnA'
+    if (data.accessToken) {
+      mapboxgl.accessToken = data.accessToken;
     }
 
-    const style = processStyle(this.data.style);
+    const style = processStyle(data.style);
+    const width = THREE.Math.floorPowerOfTwo(geomData.width * data.pxToWorldRatio);
+    const height = THREE.Math.floorPowerOfTwo(geomData.height * data.pxToWorldRatio);
+    this.xPxToWorldRatio = width / geomData.width;
+    this.yPxToWorldRatio = height / geomData.height;
 
     const options = Object.assign(
       {},
       this.data,
       {
         style,
-        width: geomComponent.data.width * this.data.pxToWorldRatio,
-        height: geomComponent.data.height * this.data.pxToWorldRatio,
+        width: width,
+        height: height, 
         // Required to ensure the canvas can be used as a texture
         preserveDrawingBuffer: true,
         hash: false,
@@ -278,12 +286,13 @@ AFRAME.registerComponent('mapbox', {
 
     this._canvasContainerId = cuid();
 
-    AFRAME.utils.entity.setComponentProperty(this.el, 'material.width', options.width);
-    AFRAME.utils.entity.setComponentProperty(this.el, 'material.height', options.height);
+    AFRAME.utils.entity.setComponentProperty(el, 'material.width', width);
+    AFRAME.utils.entity.setComponentProperty(el, 'material.height', height);
+    //setDimensions(this._canvasContainerId, el, width, height);
 
     this.created = false;
 
-    createMap(this._canvasContainerId, options, mapInstance => {
+    createMap(this._canvasContainerId, options).then(mapInstance => {
       this._mapInstance = mapInstance;
 
       const canvasId = document.querySelector(`#${this._canvasContainerId} canvas`).id;
@@ -300,6 +309,7 @@ AFRAME.registerComponent('mapbox', {
    * Generally modifies the entity based on the data.
    */
   update: function (oldData) {
+    const data = this.data;
     // Everything after this requires a map instance
     if (!this._mapInstance) {
       return;
@@ -310,14 +320,16 @@ AFRAME.registerComponent('mapbox', {
     }
 
     // Nothing changed
-    if (AFRAME.utils.deepEqual(oldData, this.data)) {
+    if (AFRAME.utils.deepEqual(oldData, data)) {
       return;
     }
 
-    if (oldData.pxToWorldRatio !== this.data.pxToWorldRatio) {
-      const geomComponent = this.el.components.geometry;
-      const width = geomComponent.data.width * this.data.pxToWorldRatio;
-      const height = geomComponent.data.height * this.data.pxToWorldRatio;
+    if (oldData.pxToWorldRatio !== data.pxToWorldRatio) {
+      const geomData = this.el.components.geometry.data;
+      const width = THREE.Math.floorPowerOfTwo(geomData.width * data.pxToWorldRatio);
+      const height = THREE.Math.floorPowerOfTwo(geomData.height * data.pxToWorldRatio);
+      this.xPxToWorldRatio = width / geomData.width;
+      this.yPxToWorldRatio = height / geomData.height;
       setDimensions(this._canvasContainerId, this.el, width, height);
     }
 
@@ -374,20 +386,6 @@ AFRAME.registerComponent('mapbox', {
   },
 
   /**
-   * Called when entity pauses.
-   * Use to stop or remove any dynamic or background behavior such as events.
-   */
-  pause () {
-  },
-
-  /**
-   * Called when entity resumes.
-   * Use to continue or add any dynamic or background behavior such as events.
-   */
-  play () {
-  },
-
-  /**
    * Returns {x, y} representing a position relative to the entity's center,
    * that correspond to the specified geographical location.
    *
@@ -402,10 +400,10 @@ AFRAME.registerComponent('mapbox', {
     const {width: elWidth, height: elHeight} = this.el.components.geometry.data;
 
     return {
-      x: (pxX / this.data.pxToWorldRatio) - (elWidth / 2),
+      x: (pxX / this.xPxToWorldRatio) - (elWidth / 2),
       // y-coord is inverted (positive up in world space, positive down in
       // pixel space)
-      y: -(pxY / this.data.pxToWorldRatio) + (elHeight / 2),
+      y: -(pxY / this.yPxToWorldRatio) + (elHeight / 2),
       z: 0
     };
   },
@@ -415,10 +413,10 @@ AFRAME.registerComponent('mapbox', {
     const {width: elWidth, height: elHeight} = this.el.components.geometry.data;
 
     // Converting back to pixel space
-    const pxX = (x + (elWidth / 2)) * this.data.pxToWorldRatio;
+    const pxX = (x + (elWidth / 2)) * this.xPxToWorldRatio;
     // y-coord is inverted (positive up in world space, positive down in
     // pixel space)
-    const pxY = ((elHeight / 2) - y) * this.data.pxToWorldRatio;
+    const pxY = ((elHeight / 2) - y) * this.yPxToWorldRatio;
 
     // Return the long / lat of that pixel on the map
     return this._mapInstance.unproject([pxX, pxY]).toArray();

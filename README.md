@@ -49,7 +49,7 @@ import 'aframe-mapbox-component';
 
 | attribute | type | default | description |
 |---|---|---|---|
-| pxToWorldRatio | number | 100 | The number of pixels per world unit to render the map on the plane. ie; when set to 100, will display 100 pixels per 1 meter in world space. (see [a note on fidelity](#a-note-on-fidelity)) |
+| pxToWorldRatio | number | 100 | The number of pixels per world unit to render the map on the plane. ie; when set to 100, will display 100 pixels per 1 meter in world space. (see [a note on fidelity](#a-note-on-fidelity)). However the resulting ratio is calculated from the widht and height of the material, which always needs to be in power of two. |
 | accessToken | string | | An optional access token if using Mapbox's style. Not needed if you use your own styling |
 | style | string | '' | Either a Mapbox URL (like `mapbox://styles/mapbox/...`) or a `JSON.stringify`'d [MapBox style](https://mapbox.com/mapbox-gl-style-spec/). If none is provided, a default style will be loaded. (see [creating a style](#creating-a-style)) |
 | ... | | | All other options are passed directly to Mapbox GL |
