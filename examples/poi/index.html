@@ -1,7 +1,7 @@
 <html>
   <head>
-    <title>A-Frame Map - GPS</title>
-    <script src="https://aframe.io/releases/0.9.2/aframe.min.js"></script>
+    <title>A-Frame Map - POIs</title>
+    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
     <script src="../../dist/aframe-mapbox-component.min.js"></script>
   </head>
   <body>
@@ -12,6 +12,8 @@
         height="4"
         position="0 0 0"
         rotation="-90 0 0"
+        accesstoken="pk.eyJ1IjoibWF0dHJlIiwiYSI6IjRpa3ItcWcifQ.s0AGgKi0ai23K5OJvkEFnA"
+        style="mapbox://styles/mapbox/outdoors-v10"
       >
         <a-sphere id="current-location" color="#00f" position="0 0 0" visible="false" radius="0.05"></a-sphere>
       </a-mapbox>

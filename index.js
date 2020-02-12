@@ -7,8 +7,6 @@ const cuid = require('cuid');
 
 const mapboxgl = require('mapbox-gl');
 
-const defaultMapStyle = require('./map-style.json');
-
 const MAP_LOADED_EVENT = 'mapbox-loaded';
 const MAP_MOVE_END_EVENT = 'mapbox-moveend';
 
@@ -112,18 +110,6 @@ function createMap (canvasId, options) {
   });
 }
 
-function processStyle (style) {
-  if (!style) {
-    return defaultMapStyle;
-  }
-
-  try {
-    return JSON.parse(style);
-  } catch (e) {
-    return style;
-  }
-}
-
   /**
    * Map component for A-Frame.
    */
@@ -153,7 +139,7 @@ AFRAME.registerComponent('mapbox', {
      * @param {string} [accessToken=''] - Optional access token for styles 
      * from Mapbox.
      */
-    accessToken: {default: ''},
+    accesstoken: {default: ''},
 
     /**
      * @param {int} [minZoom=0] - The minimum zoom level of the map (0-20). (0
@@ -251,11 +237,11 @@ AFRAME.registerComponent('mapbox', {
     const data = this.data;
     const geomData = el.components.geometry.data;
 
-    if (data.accessToken) {
-      mapboxgl.accessToken = data.accessToken;
+    if (data.accesstoken) {
+      mapboxgl.accessToken = data.accesstoken;
     }
 
-    const style = processStyle(data.style);
+    const style = data.style;
     const width = THREE.Math.floorPowerOfTwo(geomData.width * data.pxToWorldRatio);
     const height = THREE.Math.floorPowerOfTwo(geomData.height * data.pxToWorldRatio);
     this.xPxToWorldRatio = width / geomData.width;
@@ -334,7 +320,7 @@ AFRAME.registerComponent('mapbox', {
     }
 
     if (oldData.style !== this.data.style) {
-      const style = processStyle(this.data.style);
+      const style = this.data.style;
       this._mapInstance.setStyle(style);
     }
 
@@ -420,6 +406,10 @@ AFRAME.registerComponent('mapbox', {
 
     // Return the long / lat of that pixel on the map
     return this._mapInstance.unproject([pxX, pxY]).toArray();
+  },
+
+  getMap: function() {
+    return this._mapInstance;
   }
 });
 
@@ -434,12 +424,14 @@ AFRAME.registerPrimitive('a-mapbox', extendDeep({}, meshMixin, {
       side: 'both',
       transparent: true
     },
-    ['mapbox']: {}
+    mapbox: {}
   },
 
   mappings: {
     height: 'geometry.height',
-    width: 'geometry.width'
+    width: 'geometry.width',
+    style: 'mapbox.style',
+    accesstoken: 'mapbox.accesstoken'
   }
 }));
 
