@@ -35,15 +35,16 @@
 
       mapEl.addEventListener('mapbox-loaded', function() {
 
-        navigator.geolocation.watchPosition(function(position) {
+        navigator.geolocation.getCurrentPosition(function(position) {
 
-          var long = position.coords.longitude;
-          var lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          const lat = position.coords.latitude;
 
-          setProperty(mapEl, 'mapbox.center', long + ',' + lat);
+          console.log('coords', lng, lat);
+          setProperty(mapEl, 'mapbox.center', lng + ',' + lat);
           setProperty(mapEl, 'mapbox.zoom', '10');
 
-          setProperty(markerEl, 'position', mapEl.components.mapbox.project(long, lat));
+          setProperty(markerEl, 'position', mapEl.components.mapbox.project(lng, lat));
           setProperty(markerEl, 'visible', true);
 
         }, function(error) {

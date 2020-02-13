@@ -7,6 +7,7 @@ const cuid = require('cuid');
 
 const mapboxgl = require('mapbox-gl');
 
+const MAP_LOAD_EVENT = 'mapbox-load';
 const MAP_LOADED_EVENT = 'mapbox-loaded';
 const MAP_MOVE_END_EVENT = 'mapbox-moveend';
 
@@ -96,17 +97,11 @@ function createMap (canvasId, options) {
       container: canvasContainer
     }, options));
 
-    if (!mapboxInstance.loaded()) {
-      mapboxInstance.once('load', _ => {
-        mapboxInstance.resize();
-        processMapboxCanvasElement(mapboxInstance, canvasContainer);
-        resolve(mapboxInstance);
-      });
-    } else {
+    mapboxInstance.on('load', _ => {
       mapboxInstance.resize();
       processMapboxCanvasElement(mapboxInstance, canvasContainer);
       resolve(mapboxInstance);
-    }
+    });
   });
 }
 
@@ -278,14 +273,21 @@ AFRAME.registerComponent('mapbox', {
 
     this.created = false;
 
-    createMap(this._canvasContainerId, options).then(mapInstance => {
-      this._mapInstance = mapInstance;
+    const canvasContainer = getCanvasContainerAssetElement(this._canvasContainerId, options.width, options.height);
 
+    // eslint-disable-next-line no-new
+    this.mapInstance = new mapboxgl.Map(Object.assign({
+      container: canvasContainer
+    }, options));
+
+    this.mapInstance.once('load', _ => {
+      this.el.emit(MAP_LOAD_EVENT);
+      this.mapInstance.resize();
+      processMapboxCanvasElement(this.mapInstance, canvasContainer);
       const canvasId = document.querySelector(`#${this._canvasContainerId} canvas`).id;
 
       // Pointing this aframe entity to that canvas as its source
       this.el.setAttribute('material', 'src', `#${canvasId}`);
-
       this.el.emit(MAP_LOADED_EVENT);
     });
   },
@@ -297,7 +299,7 @@ AFRAME.registerComponent('mapbox', {
   update: function (oldData) {
     const data = this.data;
     // Everything after this requires a map instance
-    if (!this._mapInstance) {
+    if (!this.mapInstance) {
       return;
     }
     if (!this.created) {
@@ -321,19 +323,19 @@ AFRAME.registerComponent('mapbox', {
 
     if (oldData.style !== this.data.style) {
       const style = this.data.style;
-      this._mapInstance.setStyle(style);
+      this.mapInstance.setStyle(style);
     }
 
     if (oldData.minZoom !== this.data.minZoom) {
-      this._mapInstance.setMinZoom(this.data.minZoom);
+      this.mapInstance.setMinZoom(this.data.minZoom);
     }
 
     if (oldData.maxZoom !== this.data.maxZoom) {
-      this._mapInstance.setMaxZoom(this.data.maxZoom);
+      this.mapInstance.setMaxZoom(this.data.maxZoom);
     }
 
     if (oldData.maxBounds !== this.data.maxBounds) {
-      this._mapInstance.setmaxBounds(this.data.maxBounds);
+      this.mapInstance.setmaxBounds(this.data.maxBounds);
     }
 
     const jumpOptions = {};
@@ -356,10 +358,10 @@ AFRAME.registerComponent('mapbox', {
 
     if (Object.keys(jumpOptions).length > 0) {
       // A way to signal when these async actions have completed
-      this._mapInstance.once('moveend', _ => {
+      this.mapInstance.once('moveend', _ => {
         this.el.emit(MAP_MOVE_END_EVENT);
       });
-      this._mapInstance.jumpTo(jumpOptions); // moveend
+      this.mapInstance.jumpTo(jumpOptions); // moveend
     }
   },
 
@@ -380,7 +382,7 @@ AFRAME.registerComponent('mapbox', {
    */
   project: function (long, lat) {
     // The position (origin at top-left corner) in pixel space
-    const {x: pxX, y: pxY} = this._mapInstance.project([long, lat]);
+    const {x: pxX, y: pxY} = this.mapInstance.project([long, lat]);
 
     // The 3D world size of the entity
     const {width: elWidth, height: elHeight} = this.el.components.geometry.data;
@@ -405,11 +407,11 @@ AFRAME.registerComponent('mapbox', {
     const pxY = ((elHeight / 2) - y) * this.yPxToWorldRatio;
 
     // Return the long / lat of that pixel on the map
-    return this._mapInstance.unproject([pxX, pxY]).toArray();
+    return this.mapInstance.unproject([pxX, pxY]).toArray();
   },
 
   getMap: function() {
-    return this._mapInstance;
+    return this.mapInstance;
   }
 });
 

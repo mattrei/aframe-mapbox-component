@@ -66,5 +66,6 @@ ensure `width * pxToWorldRatio` and `height * pxToWorldRatio` are powers of 2.
 
 | event name | data | description |
 |---|---|---|
+| `mapbox-load` | (none) | Fired before the first render of the map component |
 | `mapbox-loaded` | (none) | Fired on the first render of the map component |
 | `mapbox-moveend` | (none) | Fired when zoom, center, bearing, or pitch are changed _after_ the initial render |

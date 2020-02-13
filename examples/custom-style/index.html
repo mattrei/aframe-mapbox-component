@@ -36,7 +36,7 @@
     <script>
       // see https://docs.mapbox.com/mapbox-gl-js/example/hillshade/
       const mapEl = document.getElementById('map')
-      mapEl.addEventListener('mapbox-loaded', function() {
+      mapEl.addEventListener('mapbox-load', function() {
         const map = mapEl.components.mapbox.getMap();
         map.addSource('dem', {
           'type': 'raster-dem',
