@@ -19,7 +19,7 @@ Use directly from the unpkg CDN:
 
 <body>
   <a-scene>
-    <a-mapbox position="0 0 -5"></a-map>
+    <a-mapbox position="0 0 -5"></a-mapbox>
     <a-camera></a-camera>
   </a-scene>
 </body>
