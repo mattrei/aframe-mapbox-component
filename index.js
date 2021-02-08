@@ -83,7 +83,7 @@ function getCanvasContainerAssetElement (id, width, height) {
 }
 
 function processMapboxCanvasElement (mapboxInstance, canvasContainer) {
-  const canvas = canvasContainer.querySelector('canvas');
+  const canvas = mapboxInstance.getCanvas();
   canvas.setAttribute('id', cuid());
   canvas.setAttribute('crossorigin', 'anonymous');
 }
@@ -134,7 +134,7 @@ AFRAME.registerComponent('mapbox', {
      * @param {string} [accessToken=''] - Optional access token for styles 
      * from Mapbox.
      */
-    accesstoken: {default: ''},
+    accessToken: {default: ''},
 
     /**
      * @param {int} [minZoom=0] - The minimum zoom level of the map (0-20). (0
@@ -221,19 +221,20 @@ AFRAME.registerComponent('mapbox', {
      * it in the map's style object. If it is not specified in the style,
      * either, it will default to  0 .
      */
-    pitch: {default: 0.0}
+    pitch: {default: 0.0},
 
     /**
      * All other MapBox GL options are disabled
      */
+    canvas: {type: 'selector'}
   },
   init: function () {
     const el = this.el;
     const data = this.data;
     const geomData = el.components.geometry.data;
 
-    if (data.accesstoken) {
-      mapboxgl.accessToken = data.accesstoken;
+    if (data.accessToken) {
+      mapboxgl.accessToken = data.accessToken;
     }
 
     const style = data.style;
@@ -279,14 +280,13 @@ AFRAME.registerComponent('mapbox', {
     this.mapInstance = new mapboxgl.Map(Object.assign({
       container: canvasContainer
     }, options));
+    this.el.emit(MAP_LOAD_EVENT);
 
     this.mapInstance.once('load', _ => {
-      this.el.emit(MAP_LOAD_EVENT);
       this.mapInstance.resize();
       processMapboxCanvasElement(this.mapInstance, canvasContainer);
       const canvasId = document.querySelector(`#${this._canvasContainerId} canvas`).id;
 
-      // Pointing this aframe entity to that canvas as its source
       this.el.setAttribute('material', 'src', `#${canvasId}`);
       this.el.emit(MAP_LOADED_EVENT);
     });
@@ -361,6 +361,12 @@ AFRAME.registerComponent('mapbox', {
       this.mapInstance.once('moveend', _ => {
         this.el.emit(MAP_MOVE_END_EVENT);
       });
+      this.mapInstance.once('idle', _ => {
+        const material = this.el.getObject3D('mesh').material;
+        if (material.map) {
+          material.map.needsUpdate = true;
+        }
+      });
       this.mapInstance.jumpTo(jumpOptions); // moveend
     }
   },
@@ -414,26 +420,4 @@ AFRAME.registerComponent('mapbox', {
     return this.mapInstance;
   }
 });
-
-AFRAME.registerPrimitive('a-mapbox', extendDeep({}, meshMixin, {
-  defaultComponents: {
-    geometry: {
-      primitive: 'plane'
-    },
-    material: {
-      color: '#ffffff',
-      shader: 'flat',
-      side: 'both',
-      transparent: true
-    },
-    mapbox: {}
-  },
-
-  mappings: {
-    height: 'geometry.height',
-    width: 'geometry.width',
-    style: 'mapbox.style',
-    accesstoken: 'mapbox.accesstoken'
-  }
-}));
 

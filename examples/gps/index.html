@@ -1,55 +1,53 @@
 <html>
   <head>
     <title>A-Frame Map - GPS</title>
-    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="../../dist/aframe-mapbox-component.min.js"></script>
   </head>
   <body>
     <a-scene>
-
-      <a-mapbox
-        width="7"
-        height="4"
+      <a-entity
+        id="map"
+        geometry="primitive: plane; width: 7; height: 4;"
+        material="color: #ffffff; shader: flat; side: both; transparent: true;"
         position="0 2 -2"
-        accesstoken="pk.eyJ1IjoibWF0dHJlIiwiYSI6IjRpa3ItcWcifQ.s0AGgKi0ai23K5OJvkEFnA"
-        style="mapbox://styles/mapbox/outdoors-v10"
+        mapbox="
+        accessToken: pk.eyJ1IjoibWF0dHJlIiwiYSI6IjRpa3ItcWcifQ.s0AGgKi0ai23K5OJvkEFnA;
+        style: mapbox://styles/mapbox/outdoors-v10;
+        "
       >
         <a-sphere id="marker" color="#EF2D5E" position="0 0 0" visible="false" radius="0.1"></a-sphere>
-      </a-mapbox>
+      </a-entity>
 
       <a-box position="0 4 -2" width="7.1" height="0.1" depth="0.1" color="#4CC3D9"></a-box>
       <a-box position="0 0 -2" width="7.1" height="0.1" depth="0.1" color="#4CC3D9"></a-box>
       <a-box position="3.5 2 -2" width="0.1" height="4.1" depth="0.1" color="#4CC3D9"></a-box>
       <a-box position="-3.5 2 -2" width="0.1" height="4.1" depth="0.1" color="#4CC3D9"></a-box>
 
-      <a-sky color="#ECECEC"></a-sky>
-
       <a-entity position="0 0 3.8">
         <a-camera></a-camera>
       </a-entity>
     </a-scene>
     <script>
-      var mapEl = document.querySelector('a-mapbox');
-      var markerEl = document.querySelector('#marker');
+      const mapEl = document.getElementById('map')
+      const markerEl = document.querySelector('#marker');
       var setProperty = window.AFRAME.utils.entity.setComponentProperty;
 
       mapEl.addEventListener('mapbox-loaded', function() {
+          navigator.geolocation.getCurrentPosition(position => {
 
-        navigator.geolocation.getCurrentPosition(function(position) {
+            const lng = position.coords.longitude;
+            const lat = position.coords.latitude;
 
-          const lng = position.coords.longitude;
-          const lat = position.coords.latitude;
+            setProperty(mapEl, 'mapbox.center', lng + ',' + lat);
+            setProperty(mapEl, 'mapbox.zoom', '10');
 
-          console.log('coords', lng, lat);
-          setProperty(mapEl, 'mapbox.center', lng + ',' + lat);
-          setProperty(mapEl, 'mapbox.zoom', '10');
+            setProperty(markerEl, 'position', mapEl.components.mapbox.project(lng, lat));
+            setProperty(markerEl, 'visible', true);
 
-          setProperty(markerEl, 'position', mapEl.components.mapbox.project(lng, lat));
-          setProperty(markerEl, 'visible', true);
-
-        }, function(error) {
-          console.error(error);
-        });
+          }, error => {
+            console.error(error);
+          });
       });
     </script>
   </body>

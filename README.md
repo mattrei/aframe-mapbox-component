@@ -1,7 +1,6 @@
 # aframe-mapbox-component
 
-A 3D street map entity & component for [A-Frame](https://aframe.io).
-
+A 3D street map entity & component for [A-Frame](https://aframe.io). Uses [Mapbox version 1.13.0](https://github.com/mapbox/mapbox-gl-js/blob/main/CHANGELOG.md) 3-Clause BSD.
 
 The component and idea was originally thankfully developed by [jesstelford](https://github.com/jesstelford). I forked and renamed the project accordingly and will continue to develop this component.
 
