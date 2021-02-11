@@ -11,9 +11,9 @@
         id="map"
         geometry="primitive: plane; width: 7; height: 4;"
         material="color: #ffffff; shader: flat; side: both; transparent: true;"
-        mapbox="center: 12, 47.4; zoom: 13;
-          accessToken: pk.eyJ1IjoiZXhhbXBsZXMiLCJhIjoiY2p0MG01MXRqMW45cjQzb2R6b2ptc3J4MSJ9.zA2W0IkI0c6KaAhJfk9bWg;
-          style: mapbox://styles/mapbox/cjaudgl840gn32rnrepcb9b9g;
+        mapbox="center: 12, 47; zoom: 12;
+          accessToken: pk.eyJ1IjoibWF0dHJlIiwiYSI6IjRpa3ItcWcifQ.s0AGgKi0ai23K5OJvkEFnA;
+          style: mapbox://styles/mapbox/outdoors-v10;
 "
         position="0 2 -2"
       ></a-entity>
@@ -51,6 +51,14 @@
           'waterway-river-canal-shadow'
           );
       });
+      let lng = 12
+      let lat = 47;
+      setInterval(_ => {
+        console.log('setting new pos ', lng, ' ' , lat)
+          lng = (lng+1) % 180;
+
+        mapEl.setAttribute('mapbox', 'center', lng + ',' + lat);
+      }, 5000)
     </script>
   </body>
 </html>

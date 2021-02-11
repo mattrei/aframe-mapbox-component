@@ -19,6 +19,7 @@
         <a-sphere id="marker" color="#EF2D5E" position="0 0 0" visible="false" radius="0.1"></a-sphere>
       </a-entity>
 
+      <a-sky color="#ECECEC"></a-sky>
       <a-box position="0 4 -2" width="7.1" height="0.1" depth="0.1" color="#4CC3D9"></a-box>
       <a-box position="0 0 -2" width="7.1" height="0.1" depth="0.1" color="#4CC3D9"></a-box>
       <a-box position="3.5 2 -2" width="0.1" height="4.1" depth="0.1" color="#4CC3D9"></a-box>
@@ -34,7 +35,7 @@
       var setProperty = window.AFRAME.utils.entity.setComponentProperty;
 
       mapEl.addEventListener('mapbox-loaded', function() {
-          navigator.geolocation.getCurrentPosition(position => {
+          navigator.geolocation.watchPosition(position => {
 
             const lng = position.coords.longitude;
             const lat = position.coords.latitude;
