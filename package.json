@@ -63,7 +63,7 @@
     "snazzy": "^4.0.0",
     "style-loader": "^0.23.1",
     "uglify-es": "github:mishoo/UglifyJS2#harmony",
-    "webpack": "^2.7.0"
+    "webpack": "^5.75.0"
   },
   "dependencies": {
     "cuid": "^2.1.8",
