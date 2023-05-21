@@ -238,8 +238,8 @@ AFRAME.registerComponent('mapbox', {
     }
 
     const style = data.style;
-    const width = THREE.Math.floorPowerOfTwo(geomData.width * data.pxToWorldRatio);
-    const height = THREE.Math.floorPowerOfTwo(geomData.height * data.pxToWorldRatio);
+    const width = THREE.MathUtils.floorPowerOfTwo(geomData.width * data.pxToWorldRatio);
+    const height = THREE.MathUtils.floorPowerOfTwo(geomData.height * data.pxToWorldRatio);
     this.xPxToWorldRatio = width / geomData.width;
     this.yPxToWorldRatio = height / geomData.height;
 
@@ -314,8 +314,8 @@ AFRAME.registerComponent('mapbox', {
 
     if (oldData.pxToWorldRatio !== data.pxToWorldRatio) {
       const geomData = this.el.components.geometry.data;
-      const width = THREE.Math.floorPowerOfTwo(geomData.width * data.pxToWorldRatio);
-      const height = THREE.Math.floorPowerOfTwo(geomData.height * data.pxToWorldRatio);
+      const width = THREE.MathUtils.floorPowerOfTwo(geomData.width * data.pxToWorldRatio);
+      const height = THREE.MathUtils.floorPowerOfTwo(geomData.height * data.pxToWorldRatio);
       this.xPxToWorldRatio = width / geomData.width;
       this.yPxToWorldRatio = height / geomData.height;
       setDimensions(this._canvasContainerId, this.el, width, height);
